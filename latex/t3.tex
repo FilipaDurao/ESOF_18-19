@@ -31,9 +31,21 @@ In the pictures above, between both of them, just the first parenthesis
 were inserted by the user. The other was automatically inserted and the
 cursor stays inside of them.
 
-It was also requested that, when the option to automatically match
-parentheses is enabled, that the user should be able to choose which
+It was also requested that the user should be able to choose which
 characters he desires to have paired/tripled/exploded.
+
+\begin{itemize}
+\item
+  Paired characters is when a given character is typed, its closing
+  character is added right after.
+\item
+  Tripled characters is when 3 character of given type are inserted in
+  sequence, this same characters are repeated right after, i.e. `''
+  becomes `''`''.
+\item
+  Exploded characters is when a new line is inserted between one of
+  these pairs, the second character moves 2 lines down.
+\end{itemize}
 
 \subsection{Source Code Files}\label{source-code-files}
 
@@ -92,13 +104,13 @@ represented:
 
 \begin{figure}
 \centering
-\includegraphics[height=3.12500in]{../ComponentDiagram.png}
+\includegraphics[height=3.12500in]{../componentDiagram.png}
 \caption{Component Diagram}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[height=4.16667in]{../ClassDiagram.png}
+\includegraphics[height=4.16667in]{../classDiagram.png}
 \caption{Class Diagram}
 \end{figure}
 
@@ -132,11 +144,19 @@ fact, CodeMirror can have 3 types of auto bracket matching:
   sequence, this same characters are repeated right after, i.e.
   \texttt{\textquotesingle{}\textquotesingle{}\textquotesingle{}}
   becomes
-  \texttt{\textquotesingle{}\textquotesingle{}\textquotesingle{}\textquotesingle{}\textquotesingle{}\textquotesingle{}}.
+  \texttt{\textquotesingle{}\textquotesingle{}\textquotesingle{}\textquotesingle{}\textquotesingle{}\textquotesingle{}},
+  however the combination of characters must also be present in the
+  matching pairs, this restrain is introduced by the CodeMirror package.
 \item
   Exploding pair - When a new line is inserted between one of these
   pairs, the second character moves 2 lines down.
 \end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=2.60417in]{../MatchingExamples.jpeg}
+\caption{Types of matching}
+\end{figure}
 
 To make use of this feature, 3 fields (one for each type) can be added
 to the preferences, so that the value saved in these can be passed down
@@ -151,7 +171,38 @@ updated.
 
 Finally, these new fiels must have default values, these can take the
 strings that are being used to permanently configure o CodeMirror in the
-current version of the program. 
+current version of the program.
+
+\begin{figure}
+\centering
+\includegraphics[width=5.72917in]{../MatchingCharactersBoxes.jpeg}
+\caption{Text fields}
+\end{figure}
+
+\subsection{Validate the fix}\label{validate-the-fix}
+
+To validate the fix of the issue, the group tested several different
+characters to be paired, tripled and exploded. It was verified that when
+the settings changes were saved and those characters inserted they were
+indeed matched in the intended way. Limit cases were tested, like having
+no characters at all to be matched and having the same character in all
+options. The code structure was validated by the tool \emph{esLint} and
+passed all tests.
+
+\begin{figure}
+\centering
+\includegraphics[width=5.72917in]{../TestCharactersTable.jpeg}
+\caption{Tests Table}
+\end{figure}
+
+\subsection{Submission of the fix}\label{submission-of-the-fix}
+
+The fix was submitted via pull request at the 8th of November, no errors
+or compatibility problems were found but the acceptance is still
+pending. There was a previous submission of the fix but it was far more
+incomplete that the submission of our group. The issue was not changed
+from Delivery \#1 to Delivery \#2. The issue was not modified by the
+group, it was strictly followed as it was on the issue list.
 
 \section{Issue \#1885}\label{issue-1885}
 
@@ -189,7 +240,7 @@ dragging a note, the cursor hovers a folder. As we can see in the bottom
 image no highlighting is done when hovering a folder while dragging a
 note.
 
-\section{Source Code Files}\label{source-code-files-1}
+\subsection{Source Code Files}\label{source-code-files-1}
 
 The file \emph{browser/main/SideNav/StorageItem.js} handles the
 detection of the cursor when a note is dragged over and each of the
@@ -224,13 +275,13 @@ represented:
 
 \begin{figure}
 \centering
-\includegraphics[height=3.12500in]{../ComponentDiagram.png}
+\includegraphics[height=3.12500in]{../componentDiagram.png}
 \caption{Component Diagram}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[height=4.16667in]{../ClassDiagram.png}
+\includegraphics[height=4.16667in]{../classDiagram.png}
 \caption{Class Diagram}
 \end{figure}
 
@@ -247,12 +298,51 @@ the side navigation bar.
 \caption{State Diagram}
 \end{figure}
 
-\section{Design of the fix}\label{design-of-the-fix-1}
+\subsection{Design of the fix}\label{design-of-the-fix-1}
 
 The fix for this problem is rather simple. The functionality of moving
 notes between folders by dragging them already exists, so the hover of a
 note over a folder is already handled. The only needed implementation
 was to change the styling of the destination folder when it was hovered.
-So the fix will consist in changing the background color of a folder
-hovered with a note to be the same as the color of a folder when hovered
-just with the mouse.
+So the fix will consist in adding a CSS class to the object that
+represents a folder when a dragged note is hovered over the former, this
+CSS class will change the style of the folder to match when the same
+object has the mouse over it.
+
+\subsection{Validation of the fix}\label{validation-of-the-fix}
+
+Because this issue was a graphic interface issue, there were no unit
+tests that could be run to assure it was fully right. So, many tests
+were performed by the group that verified many use cases that used this
+fix. It was evident that the folder was indeed becoming highlighted when
+notes were dragged over it, and stop being highlighted when the note
+leaves that area. It also stops being highlighted when the note is
+dropped, and it was verified that the note actually changed folders. The
+code structure was validated by the tool \emph{esLint} and passed all
+tests.
+
+\begin{figure}
+\centering
+\includegraphics[width=5.72917in]{../DragExample.jpeg}
+\caption{Folder dragged over}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=5.72917in]{../TestHoverTable.jpeg}
+\caption{Tests Table}
+\end{figure}
+
+\subsection{Submission of the fix}\label{submission-of-the-fix-1}
+
+The fix was submitted via pull request at the 30th of November and was
+accepted and merged to the master branch at the 13th of December. The
+fix will be released in the release v0.11.12. It hadn't been solved
+before. The issue was not changed from Delivery \#1 to Delivery \#2. The
+issue was not modified by the group, it was strictly followed as it was
+on the issue list.
+
+\section{Wrap up}\label{wrap-up}
+
+During this work, the different tasks were evenly distributed among the
+group elements.

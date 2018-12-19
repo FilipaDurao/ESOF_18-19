@@ -6,7 +6,7 @@ done
 
 cd ../latex
 
-latexmk -pdf Main.tex -c
+latexmk -pdf Main.tex
 
 mv Main.pdf ../ESOF-2018-19-T3-3MIEIC02-09.pdf
 cd ..
